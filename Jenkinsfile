@@ -1,5 +1,5 @@
 node('master') {
-  env.BUILD_IMAGE = "docker.io/openshift/jenkins-slave-maven-centos7:latest"
+  env.BUILD_IMAGE = "openshift/jenkins-slave-maven-centos7:latest"
 }
 podTemplate(cloud: 'openshift', label: 'maven-sonar', containers: [
     containerTemplate(name: 'jnlp',
@@ -11,6 +11,8 @@ podTemplate(cloud: 'openshift', label: 'maven-sonar', containers: [
     command: 'cat',
     workingDir: '/home/jenkins'
     )
+  ],volumes: [
+    persistentVolumeClaim(claimName: 'maven-repository', mountPath: '/opt/openshift/mvn/repository')
   ]) {
   node('maven-sonar') {
     stage('SonarQube Scan') {
