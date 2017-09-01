@@ -20,7 +20,7 @@ podTemplate(cloud: 'openshift', label: 'maven-sonar', containers: [
       sh """
         mvn test org.sonarsource.scanner.maven:sonar-maven-plugin:3.3.0.603:sonar -f pom.xml \
         -Dsonar.login=${SONAR_TOKEN} -Dsonar.host.url=http://sonarqube:9000 \
-        --batch-mode"""
+        --batch-mode --settings=settings.xml"""
     }
   }
 }
