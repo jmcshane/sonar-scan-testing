@@ -28,13 +28,14 @@ podTemplate(cloud: 'openshift', label: 'maven-sonar', containers: [
       node('maven-sonar') {
         sh "echo test > /opt/openshift/mvn/repository/test.txt && sleep 10"
       }
+    }, "second_parallel" : {
       node('maven-sonar') {
         sh "sleep 5 && echo test > /opt/openshift/mvn/repository/test-2.txt && sleep 10"
       }
+    }, "third_parallel" : {
       node('maven-sonar') {
         sh "sleep 3 && echo test > /opt/openshift/mvn/repository/test-3.txt && sleep 8"
       }
     }
-
   )
 }
