@@ -12,7 +12,7 @@ podTemplate(cloud: 'openshift', label: 'maven-sonar', containers: [
     workingDir: '/home/jenkins'
     )
   ],volumes: [
-    persistentVolumeClaim(claimName: 'maven-repository', mountPath: '/opt/openshift/mvn/repository')
+    persistentVolumeClaim(claimName: 'maven-repository-2', mountPath: '/opt/openshift/mvn/repository')
   ]) {
   node('maven-sonar') {
     stage('SonarQube Scan') {
@@ -23,4 +23,24 @@ podTemplate(cloud: 'openshift', label: 'maven-sonar', containers: [
         --batch-mode --settings=settings.xml"""
     }
   }
+  parallel(
+    "first_parallel" : {
+      node('maven-sonar') {
+        stage('first-stage') {
+          sh "echo test > /opt/openshift/mvn/repository/test.txt && sleep 10"
+        }
+      }
+      node('maven-sonar') {
+        stage('second-stage') {
+          sh "sleep 5 && echo test > /opt/openshift/mvn/repository/test-2.txt && sleep 10"
+        }
+      }
+      node('maven-sonar') {
+        stage('third-stage') {
+          sh "sleep 3 && echo test > /opt/openshift/mvn/repository/test-3.txt && sleep 8"
+        }
+      }
+    }
+
+  )
 }
